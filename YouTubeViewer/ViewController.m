@@ -38,6 +38,10 @@
     CGRect bounds = self.view.bounds;
     
     dispatch_queue_t downloadQueue = dispatch_queue_create("YouTube download queue", NULL);
+    
+    [self.spinner startAnimating];
+    self.loadingLabel.hidden = NO;
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
         
     dispatch_async(downloadQueue, ^{
         NSData *youTubeData = [NSData dataWithContentsOfURL:youTubeURL];        
@@ -75,6 +79,10 @@
                 VideoCardView *videoCard = [[VideoCardView alloc] initWithTitle:video.title author:video.author thumbnailImage:video.thumbnailImage viewCount:video.viewCount description:video.descriptionText contentURL:video.linkURL frame:CGRectMake((i * bounds.size.width), 0, bounds.size.width, bounds.size.height)];
                 [self.scrollView addSubview:videoCard];
             }
+            
+            [self.spinner stopAnimating];
+            self.loadingLabel.hidden = YES;
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
             
             // Set contentSize of scrollView
             self.scrollView.contentSize = CGSizeMake(([self.videos count] * bounds.size.width), bounds.size.height);
